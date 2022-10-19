@@ -18,7 +18,7 @@ enum {
 
 #if LOG_LEVEL <= LOG_TRACE
     #define trace(...) do {\
-        fprintf(stderr, "[%16s:%04d] \033[36m[TRACE]: ", __FILE__, __LINE__);\
+        fprintf(stderr, "\033[36m[%16s:%04d] [TRACE]: ", __FILE__, __LINE__);\
         fprintf(stderr, __VA_ARGS__);\
         fprintf(stderr, "\033[0m\n");\
     } while (0)
@@ -38,7 +38,7 @@ enum {
 
 #if LOG_LEVEL <= LOG_INFO
     #define info(...) do {\
-        fprintf(stderr, "[%16s:%04d] \033[32m[INFO ]: ", __FILE__, __LINE__);\
+        fprintf(stderr, "\033[32m[%16s:%04d] [INFO ]: ", __FILE__, __LINE__);\
         fprintf(stderr, __VA_ARGS__);\
         fprintf(stderr, "\033[0m\n");\
     } while (0)
@@ -48,7 +48,7 @@ enum {
 
 #if LOG_LEVEL <= LOG_WARN
     #define warn(...) do {\
-        fprintf(stderr, "[%16s:%04d] \033[33m[WARN ]: ", __FILE__, __LINE__);\
+        fprintf(stderr, "\033[33m[%16s:%04d] [WARN ]: ", __FILE__, __LINE__);\
         fprintf(stderr, __VA_ARGS__);\
         fprintf(stderr, "\033[0m\n");\
     } while (0)
@@ -58,7 +58,7 @@ enum {
 
 #if LOG_LEVEL <= LOG_ERROR
     #define error(...) do {\
-        fprintf(stderr, "[%16s:%04d] \033[31;1m[ERROR]: ", __FILE__, __LINE__);\
+        fprintf(stderr, "\033[31;1m[%16s:%04d] [ERROR]: ", __FILE__, __LINE__);\
         fprintf(stderr, __VA_ARGS__);\
         fprintf(stderr, "\033[0m\n");\
     } while (0)
@@ -68,7 +68,7 @@ enum {
 
 #if LOG_LEVEL <= LOG_FATAL
     #define fatal(...) do {\
-        fprintf(stderr, "[%16s:%04d] \033[35;1m[FATAL]: ", __FILE__, __LINE__);\
+        fprintf(stderr, "\033[35;1m[%16s:%04d] [FATAL]: ", __FILE__, __LINE__);\
         fprintf(stderr, __VA_ARGS__);\
         fprintf(stderr, "\033[0m\n");\
         abort();\

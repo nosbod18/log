@@ -11,6 +11,9 @@ int main(void) {
     info("This is an info message");
     warn("This is a warning message");
     error("This is an error message");
-    fatal("This is an error message, and will abort the program");
+    fatal("This is a fatal message, and will abort the program");
 }
 ```
+
+### Output
+![](output.png)

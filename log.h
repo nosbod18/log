@@ -1,78 +1,67 @@
 #pragma once
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifndef LOG_LEVEL
-    #define LOG_LEVEL LOG_LEVEL_INFO
+    #define LOG_LEVEL LOG_LEVEL_DEFAULT
 #endif
 
 enum {
-    LOG_LEVEL_ALL,
-    LOG_LEVEL_FATAL,
-    LOG_LEVEL_ERROR,
-    LOG_LEVEL_WARN,
-    LOG_LEVEL_INFO,
-    LOG_LEVEL_DEBUG,
-    LOG_LEVEL_TRACE
+    LOG_LEVEL_TRACE     = 0x01,
+    LOG_LEVEL_DEBUG     = 0x02,
+    LOG_LEVEL_INFO      = 0x04,
+    LOG_LEVEL_WARN      = 0x08,
+    LOG_LEVEL_ERROR     = 0x10,
+    LOG_LEVEL_FATAL     = 0x20,
+
+    LOG_LEVEL_SILENT    = 0x00,
+    LOG_LEVEL_DEFAULT   = LOG_LEVEL_INFO | LOG_LEVEL_WARN | LOG_LEVEL_ERROR | LOG_LEVEL_FATAL,
+    LOG_LEVEL_ALL       = 0xFF
 };
 
-#if LOG_LEVEL <= LOG_LEVEL_TRACE
-    #define trace(...) do {\
-        fprintf(stderr, "\033[36m[%16s:%04d] [TRACE]: ", __FILE__, __LINE__);\
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\033[0m\n");\
-    } while (0)
+#define LOG(color, tag, ...) do {\
+    time_t t___ = time(NULL);\
+    struct tm *tm___ = localtime(&t___);\
+    char now___[64] = {0};\
+    strftime(now___, sizeof now___, "%b %e %T", tm___);\
+    fprintf(stderr, "%s%c %s@%s:%d ", color, tag, __func__, __FILE__, __LINE__);\
+    fprintf(stderr, __VA_ARGS__);\
+    fprintf(stderr, "\033[0m\n");\
+} while (0)
+
+#if (LOG_LEVEL & LOG_LEVEL_FATAL) == LOG_LEVEL_FATAL
+    #define LOG_FATAL(...)  do { LOG("\033[41m", 'F', __VA_ARGS__); abort(); } while (0)
 #else
-    #define trace(...)
+    #define LOG_FATAL(...)
 #endif
 
-#if LOG_LEVEL <= LOG_LEVEL_DEBUG
-    #define debug(...) do {\
-        fprintf(stderr, "[%16s:%04d] [DEBUG]: ", __FILE__, __LINE__);\
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\n");\
-    } while (0)
+#if (LOG_LEVEL & LOG_LEVEL_ERROR) == LOG_LEVEL_ERROR
+    #define LOG_ERROR(...) LOG("\033[31m", 'E', __VA_ARGS__)
 #else
-    #define debug(...)
+    #define LOG_ERROR(...)
 #endif
 
-#if LOG_LEVEL <= LOG_LEVEL_INFO
-    #define info(...) do {\
-        fprintf(stderr, "\033[32m[%16s:%04d] [INFO ]: ", __FILE__, __LINE__);\
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\033[0m\n");\
-    } while (0)
+#if (LOG_LEVEL & LOG_LEVEL_WARN) == LOG_LEVEL_WARN
+    #define LOG_WARN(...)  LOG("\033[33m", 'W', __VA_ARGS__)
 #else
-    #define info(...)
+    #define LOG_WARN(...)
 #endif
 
-#if LOG_LEVEL <= LOG_LEVEL_WARN
-    #define warn(...) do {\
-        fprintf(stderr, "\033[33m[%16s:%04d] [WARN ]: ", __FILE__, __LINE__);\
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\033[0m\n");\
-    } while (0)
+#if (LOG_LEVEL & LOG_LEVEL_INFO) == LOG_LEVEL_INFO
+    #define LOG_INFO(...)  LOG("\033[32m", 'I', __VA_ARGS__)
 #else
-    #define warn(...)
+    #define LOG_INFO(...)
 #endif
 
-#if LOG_LEVEL <= LOG_LEVEL_ERROR
-    #define error(...) do {\
-        fprintf(stderr, "\033[31;1m[%16s:%04d] [ERROR]: ", __FILE__, __LINE__);\
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\033[0m\n");\
-    } while (0)
+#if (LOG_LEVEL & LOG_LEVEL_DEBUG) == LOG_LEVEL_DEBUG
+    #define LOG_DEBUG(...) LOG("\033[36m", 'D', __VA_ARGS__)
 #else
-    #define error(...)
+    #define LOG_DEBUG(...)
 #endif
 
-#if LOG_LEVEL <= LOG_LEVEL_FATAL
-    #define fatal(...) do {\
-        fprintf(stderr, "\033[35;1m[%16s:%04d] [FATAL]: ", __FILE__, __LINE__);\
-        fprintf(stderr, __VA_ARGS__);\
-        fprintf(stderr, "\033[0m\n");\
-        abort();\
-    } while (0)
+#if (LOG_LEVEL & LOG_LEVEL_TRACE) == LOG_LEVEL_TRACE
+    #define LOG_TRACE(...) LOG("\033[35m", 'T', __VA_ARGS__)
 #else
-    #define fatal(...)
+    #define LOG_TRACE(...)
 #endif
